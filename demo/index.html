@@ -574,12 +574,12 @@ a { color: inherit; }
 .kgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 8px; }
 .kcell { display: flex; flex-direction: column; gap: 3px; align-items: center; min-height: 128px; padding: 6px 4px; text-align: center; border: 2px dashed #b7a77a; color: #8a7a52; font-size: 12px; justify-content: center; }
 .kcell.got { border: 0; padding: 0; justify-content: flex-start; color: #2a3358; }
-.ksk { display: block; width: 100%; max-width: 150px; aspect-ratio: 4 / 3; object-fit: contain; background: #fbf5e2; border: 2px solid #5a5a62; outline: 1px solid #8a8a9288; outline-offset: 2px; border-radius: 2px 5px 2px 4px; transform: rotate(-1deg); }
+.ksk { display: block; width: auto; height: auto; max-width: min(100%, 150px); transform: rotate(-1deg); }
 .kcell:nth-child(even) .ksk { transform: rotate(1deg); }
 .kcell b { font-weight: 400; font-size: 14px; color: #7a3f12; }
 .kcell i { font-size: 12px; line-height: 1.4; }
 .kbig { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 0; }
-.kbig .ksk { max-width: 100%; width: 208px; transform: rotate(-1.2deg); }
+.kbig .ksk { max-width: min(100%, 208px); transform: rotate(-1.2deg); }
 .kbig .ksk.draw { animation: skdraw 1s steps(10) forwards; }
 @keyframes skdraw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 .kbig .ktitle { font-size: 20px; min-height: 30px; }
@@ -677,6 +677,8 @@ a { color: inherit; }
 .tapbar { display: flex; gap: 4px; margin: 8px 0 4px; }
 .tapbar i { flex: 1; height: 12px; background: #dcdcea; outline: 2px solid #000; }
 .tapbar i.on { background: var(--leaf); }
+.dig-tracking .tapbar i { height: 5px; background: #244144; outline: 1px solid #658677; }
+.dig-tracking .tapbar i.on { background: #f2c664; }
 #qt.icc { cursor: pointer; border-color: #6aa3d8; }
 #qt.icc .qh { color: #8cc4f4; } #qt.icc .qp i { background: #6aa3d8; }
 #qt.icc.done { border-color: #74e05a; animation: none; } #qt.icc.done .qh { color: #74e05a; } #qt.icc.done .qp i { background: #74e05a; }
@@ -746,14 +748,6 @@ a { color: inherit; }
 .tshint.nudge { animation: tsnudge .5s steps(4); }
 @keyframes tsnudge { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); color: #b3402a; } 75% { transform: translateX(4px); color: #b3402a; } }
 @media (prefers-reduced-motion: reduce) { .tshint.nudge { animation: none; color: #b3402a; } }
-/* v73：空拍限定（從高處才看得到） */
-.k-a { border-color: #c7a0ff; }
-.airg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.aq { display: grid; gap: 2px; align-content: center; justify-items: center; min-height: 54px; padding: 4px 2px; background: #141a30; outline: 2px solid #000; text-align: center; min-width: 0; }
-.aq span { font-family: var(--arcade); color: #5a6386; font-size: 18px; line-height: 1; }
-.aq b { color: #c7a0ff; font-size: 12px; line-height: 1.25; font-weight: 700; }
-.aq small { color: #8d92ab; font-size: 10.5px; line-height: 1.25; }
-.aq.on { background: #1a1a38; outline-color: #c7a0ff; }
 /* v84：新的一天（河況預報卡，整個畫面置中） */
 .daycard { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; background: #000; opacity: 0; transition: opacity .5s; }
 .daycard.on { opacity: 1; }
@@ -818,11 +812,6 @@ a { color: inherit; }
 .drn canvas { width: 100%; image-rendering: pixelated; outline: 3px solid #000; }
 .drn .legend.big { font-size: 18px; gap: 8px 18px; }
 .drn .legend.big b { width: 16px; height: 16px; }
-.drn .airg { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.drn .aq { min-height: 70px; padding: 8px 4px; }
-.drn .aq span { font-size: 28px; }
-.drn .aq b { font-size: 17px; }
-.drn .aq small { font-size: 14px; }
 .bagv > #wOk { position: sticky; bottom: 0; z-index: 6; margin-top: auto; box-shadow: 0 -10px 0 0 #05060d; }
 .kask .kprev { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 4px; pointer-events: none; user-select: none; }
 .kask .kprev li { padding: 6px 10px; color: #dfe2f0; font-size: 17px; border-bottom: 1px dashed #3a4166; }
@@ -1023,6 +1012,10 @@ a { color: inherit; }
 .sty .cardwrap { position: relative; width: min(100%, 330px, calc((100vh - 200px) * 9 / 16)); aspect-ratio: 9 / 16; background: #fff; outline: 3px solid #2a3358; box-shadow: 6px 6px 0 rgba(42, 51, 88, .25); }
 .sty .cardwrap img { width: 100%; height: 100%; display: block; image-rendering: pixelated; opacity: 0; transition: opacity .4s; }
 .sty .cardwrap img.on { opacity: 1; }
+.sty .s-sum .demo-cardwrap { aspect-ratio: auto; }
+.sty .s-sum .demo-cardwrap img { height: auto; }
+.sty .demo-crab-note { display: flex; align-items: center; gap: 10px; width: min(100%, 360px); justify-self: center; }
+.sty .demo-crab-note p { margin: 0; font-size: 16px; line-height: 1.55; text-align: left; flex: 1; }
 .sty .cardload { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: #2a3358; }
 .sty .vdots { display: flex; gap: 16px; }
 .sty .vdots button { display: grid; justify-items: center; gap: 3px; background: none; border: 0; padding: 2px 4px; color: #6a7898; font-size: 11.5px; cursor: pointer; }
@@ -1106,9 +1099,9 @@ a { color: inherit; }
 .sty .cn.ans { transform: rotate(1.6deg); margin-left: 26px; background: #fff0b8; }
 .sty .cn.ans .hw { font-size: 20px; }
 .sty .tape { position: absolute; top: -8px; left: 50%; width: 56px; height: 16px; margin-left: -28px; background: rgba(160, 200, 230, .65); transform: rotate(-3deg); }
-.sty .polas { display: flex; gap: 8px; justify-content: center; align-items: flex-start; padding: 6px 0; }
-.sty .polas figure { position: relative; flex: 1 1 0; min-width: 0; max-width: 128px; margin: 0; padding: 7px 6px 6px; background: #fff; box-shadow: 2px 3px 0 rgba(42, 51, 88, .22); transform: rotate(var(--r)); }
-.sty .polas img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: contain; background: #fbf5e2; }
+.sty .polas { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: flex-start; padding: 6px 0; }
+.sty .polas figure { position: relative; flex: 0 1 calc((100% - 16px) / 3); min-width: 0; max-width: 128px; margin: 0; padding: 7px 6px 6px; background: #fff; box-shadow: 2px 3px 0 rgba(42, 51, 88, .22); transform: rotate(var(--r)); }
+.sty .polas img { display: block; width: 100%; height: auto; }
 .sty .polas figcaption { margin-top: 5px; font-size: 12px; text-align: center; color: #2a3358; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sty .polas .tape { width: 34px; height: 12px; margin-left: -17px; top: -6px; }
 .sty .stks { background: rgba(255, 255, 255, .7); padding: 10px 10px 8px; transform: rotate(.8deg); box-shadow: 2px 3px 0 rgba(42, 51, 88, .14); }
@@ -1399,7 +1392,7 @@ const ZONES = [
       `#,,---------.b#`,
       `#bb------~--.b#`,
       `#,.---------.,#`,
-      `#,,*--------,,#`,
+      `#,,,--------,,#`,
       `#,.--------gg,#`,
       `#b.-------gggb#`,
       `#b.--*----~-.,#`,
@@ -1681,8 +1674,6 @@ const DEX = {
   // v73 工程段（聖甲蟲的工程現場附近）
   plover:     { name: '小環頸鴴', kind: 'bird', tone: 'brown', photo: 'todo', text: '胸前有一圈黑色的環，喜歡裸露的礫石灘和空地。牠的巢只是卵石之間的一個小凹洞，蛋的顏色跟石頭很像。' },
   loach:      { name: '中華花鰍', kind: 'fish', tone: 'grey', photo: 'todo', text: '身上一排斑點，貼著河底的沙子生活。一受到驚嚇就鑽進沙裡，只剩眼睛露在外面。' },
-  // v73 空拍限定（air：只有從高處才看得到，空拍之後地面才會出現）
-  waterhen:   { name: '白腹秧雞', kind: 'bird', tone: 'black', photo: 'todo', air: 1, text: '臉和胸口是白的，尾巴一翹一翹。平常躲在草叢和蘆葦裡，從地面上很難發現牠。' },
 };
 
 // 掉落機率是筏子溪的真實淨溪紀錄（ICC 國際淨灘表格，2019/6–2026/8，荒野筏子溪平台）
@@ -1929,16 +1920,11 @@ function buildWorld() {
         if (best) ents.push({ id: `v72g${best[0]}_${best[1]}`, x: best[0], y: best[1], k: 'big', look: ['sofa', 'tires', 'mattress'][(hq(best[0], best[1], 5) + j) % 3] });
       }
     }
-    // 空拍限定物件沿用既有品項；教學放在向上路，避開空拍照地點。
+    // 額外的圖鑑物種，座標不能放置時找附近可走的格子。
     {
       const zy = id => ZONES.find(z => z.id === id).y0;
-      const tut = ents.find(e => e.id === 'e3_7');
-      if (tut) { tut.form = 'plain'; tut.air = 1; tut.airTut = 1; }
-      ['h3_4', 'l3_5'].forEach(id => { const e = ents.find(q => q.id === id); if (e) e.air = 1; });
-      // 空拍才能發現的白腹秧雞，加上工程段附近 2 種動物（都是非垃圾）。座標 [x, 區段內第幾列]，不合條件就在附近找格子
       const NEWDEX = [
         ['v73e1', 'plover', 'd', 11, 5], ['v73e3', 'loach', 'd', 7, 6],   // 迎賓河段的工程旁邊（三角錐的南邊，施工期間走得到）
-        ['v73a1', 'waterhen', 'f', 6, 6],
         ['v129w', 'whwag', 'g', 6, 8], ['v129h', 'greyheron', 'm', 7, 6], ['v129k', 'kestrel', 'j', 11, 8], ['v129g', 'gudgeon', 'h', 8, 10],
       ];
       NEWDEX.forEach(([id, dex, zid, x0, r0]) => {
@@ -1948,7 +1934,7 @@ function buildWorld() {
           const c = at(x, y); if (!'-.,"'.includes(c) || blockedBy(c, { sickle: 1, pole: 1, route: 1 })) continue;
           const d = Math.abs(x - x0) + Math.abs(y - y0); if (d < bv) { bv = d; best = [x, y]; }
         }
-        if (best) { const e = { id, x: best[0], y: best[1], k: 'dex', dex }; if (DEX[dex].air) e.air = 1; ents.push(e); }
+        if (best) ents.push({ id, x: best[0], y: best[1], k: 'dex', dex });
       });
     }
     // 大紅姬緣椿愛吸台灣欒樹的汁液：把牠改放到最近一棵欒樹（F）旁邊
@@ -1978,12 +1964,6 @@ function buildWorld() {
       allow.forEach(id => { const d = share[id] * (n + pieces) - got[id]; if (d > bd + 1e-9) { bd = d; best = id; } });
       e.item = best; got[best] += pieces; n += pieces;
     });
-    // 教學那一包東西要看得出是「一包」：不是袋子就跟離它最近的一件袋子互換品項（總數、比例不變）
-    const tut2 = ents.find(e => e.airTut);
-    if (tut2 && !['bag', 'plastic'].includes(tut2.item)) {
-      const o = ents.filter(e => e.k === 'trash' && e !== tut2 && !e.air && e.form === 'plain' && ['bag', 'plastic'].includes(e.item)).sort((a, b) => Math.abs(a.y - tut2.y) - Math.abs(b.y - tut2.y))[0];
-      if (o) { const t = o.item; o.item = tut2.item; tut2.item = t; }
-    }
   }
   // 等物件和地形都配置完才加長河段，保留舊存檔對應的物件 ID。
   const addedRowsAt = ZONES.find(z => z.id === 'g').y0;
@@ -2003,6 +1983,8 @@ function buildWorld() {
   }
   const snail = ents.find(e => e.dex === 'snail');
   snail.x = 6;
+  const pondweed = ents.find(e => e.dex === 'pondweed');
+  pondweed.x = 7;
   const worksStart = alts.find(a => a.flag === 'works').y;
   WORKS_AFTER.slice(1).forEach((text, i) => alts.push({ flag: 'works', y: worksStart + i + 1, text }));
   // 清出橋面兩端的施工空地，保留中間的涉水路線。
@@ -2017,9 +1999,6 @@ function buildWorld() {
   for (const [id, x, offset] of [['h3_10', 12, 4], ['h12_9', 12, 3], ['v129g', 7, 3]]) {
     const e = ents.find(item => item.id === id);
     if (e) { e.x = x; e.y = shizheng.y + offset; }
-  }
-  for (const e of ents) {
-    if (e.air && (zoneAt[e.y].id === 'd' || aerialSitesAt(aerialSites, e.y).length)) delete e.air;
   }
   // 固定兩處傳說級挖掘掉落，保留原本的垃圾 ID 讓舊存檔不會重複撿。
   for (const [id, loot] of [['i3_5', 'toyHead'], ['n3_5', 'toyWalker']]) {
@@ -2501,8 +2480,8 @@ const iccQDone = () => iccPieces() >= ICCQ_N && iccRows() >= ICCQ_ROWS;
 const limitNow = () => LIMIT + timeBonus();
 const left = () => Math.max(0, Math.ceil(limitNow() - G.clock));
 const inParty = k => G.party.includes(k);
-const entGone = e => G.gone[e.id] || (e.air && !(G.air && G.air[e.id]))
-  || (e.k === 'npc' && /^join/.test(e.ev || '') && (G.party.includes(e.who) || (G.partyAway || []).includes(e.who)));   // 已經入隊的夥伴不再站在原地（舊存檔：聖甲蟲搬了位置，id 不一樣） // v73：空拍限定的東西，空拍看到之前地面上不顯示、也踩不到
+const entGone = e => G.gone[e.id]
+  || (e.k === 'npc' && /^join/.test(e.ev || '') && (G.party.includes(e.who) || (G.partyAway || []).includes(e.who)));   // 已經入隊的夥伴不再站在原地（舊存檔：聖甲蟲搬了位置，id 不一樣）
 const entAt = (x, y) => ENTS.find(e => e.x === x && e.y === y && !entGone(e));
 const SOLID = { npc: 1, chest: 1, sign: 1, house: 1 };
 const FIT_CONTAIN = { n140: 1, n098: 1, n031: 1, n045: 1, fig_a: 1, fig_b: 1 };
@@ -3780,10 +3759,10 @@ const nearDeep = e => { for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <=
 function formCost(e) {
   const f = e.form || 'plain', fast = G.lv >= 7;
   if (f === 'stuck') return { min: fast ? 2 : 3, sta: fast ? 4 : 6, rounds: fast ? 1 : 2, ask: 1 };
-  if (f === 'hung') return { min: 2, sta: 9 };
+  if (f === 'hung') return { min: 2, sta: 9, rounds: 1, ask: 1 };
   if (f === 'foam') return { min: 4, sta: 4, rounds: 1, ask: 1 };
-  if (f === 'scatter') return { min: 6, sta: 8, ask: 1 };
-  if (f === 'soaked') return { min: 2, sta: nearDeep(e) ? 14 : isWaterAt(e.x, e.y) ? 11 : 9 };
+  if (f === 'scatter') return { min: 6, sta: 8, rounds: 1, ask: 1 };
+  if (f === 'soaked') return { min: 2, sta: nearDeep(e) ? 14 : isWaterAt(e.x, e.y) ? 11 : 9, rounds: 1, ask: 1 };
   if (f === 'buried') return { min: 3, sta: 5, ask: 1 };
   return { min: 1, sta: 3 };
 }
@@ -3812,7 +3791,7 @@ async function pickFlow(e) {
   const rareId = form === 'buried' ? e.mudRare : null;
   if (c.ask) {
     const pieces = form === 'scatter' ? 6 : 1;
-    const label = { stuck: `拔`, foam: `撿`, scatter: `全部撿（${pieces} 件）`, buried: `挖` }[form];
+    const label = { stuck: '拔', hung: '取下', soaked: '撿', foam: '撿', scatter: `全部撿（${pieces} 件）`, buried: `挖` }[form];
     const i = await ask(null, `<img class="pk" src="${A.icons[e.item]}" alt="">「${name}」。<br>要撿嗎？${c.min} 分鐘，體力 ${cost}，袋子 ${w} 格。`, [label, '先不要']);
     if (i !== 0) return;
     const rounds = form === 'buried' ? (rareId ? 2 : 1) : c.rounds;
@@ -3977,7 +3956,7 @@ function nearestExit() {
   return list[0];
 }
 
-/* ---------- 撿拾操作：卡石縫、保麗龍碎片與埋在泥裡的垃圾用集氣條 ---------- */
+/* ---------- 特殊垃圾共用的集氣操作 ---------- */
 const TS_SAY = { stuck: '嘿咻！', buried: '挖到了！', foam: '又碎了……' };
 let TAPJ = null; // 集氣中：{ e, n, k, hopT }
 // 小人這一幀往上跳了幾個像素（drawChar 用）
@@ -4009,7 +3988,7 @@ async function chargeTrashScene(form, item, n, e) {
       if (bars[TAPJ.k]) bars[TAPJ.k].classList.add('on');
       TAPJ.k++; TAPJ.hopT = performance.now(); SFX.cut();
       if (TAPJ.k >= n) {
-        SFX.good(); hint.textContent = ''; toast(TS_SAY[form], { ms: 900 });
+        SFX.good(); hint.textContent = ''; toast(TS_SAY[form] || '撿起來了！', { ms: 900 });
         setTimeout(res, REDUCED ? 500 : 700);
       }
     };
@@ -4320,7 +4299,7 @@ function draw(t) {
     for (const e of droneMarks()) {
       const sy = e.y * TILE - cam; if (sy < -20 || sy > viewH + 20) continue;
       ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(e.x * TILE + 8, sy + 8, pulse + 1, 0, 7); ctx.stroke();
-      ctx.strokeStyle = e.air ? '#c7a0ff' : e.k === 'dex' ? '#ffc61e' : e.k === 'npc' ? '#7ee0ff' : e.k === 'rare' ? '#ff5240' : '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = e.k === 'dex' ? '#ffc61e' : e.k === 'npc' ? '#7ee0ff' : e.k === 'rare' ? '#ff5240' : '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
     }
   }
   if (TOUR.on && mode === 'play') drawTour(t, cam);
@@ -4558,7 +4537,7 @@ function restore(s) {
     G.dex.snipe = 1;
     delete G.dex.snipem;
   }
-  for (const id of ['bidens', 'teal', 'tilapia', 'redstart', 'eggplant', 'coral']) delete G.dex?.[id];
+  for (const id of ['bidens', 'teal', 'tilapia', 'redstart', 'eggplant', 'coral', 'waterhen']) delete G.dex?.[id];
   // 早期版本可能在還沒上岸時就標成完工。已過工區的玩家保留通行進度。
   const landedAtWorks = G.landed?.['永春路'];
   if (G.f.sawWorks && G.f.works && !G.f.worksLandedO && !landedAtWorks && s.y >= WORKS_Y) {
@@ -4573,7 +4552,7 @@ function restore(s) {
   G.bag = G.bag || []; if (!Array.isArray(G.bagWs) || G.bagWs.length !== G.bag.length) G.bagWs = G.bag.map(id => (RARE[id] ? RARE[id].size : 1));
   G.heard = G.heard || {}; G.crumbs = G.crumbs || {}; G.reported = G.reported || {}; G.record = G.record || {}; G.iccqDone = G.iccqDone || 0;
   if (G.f.bagged && !G.f.iccShow) G.f.iccShow = 1;   // 舊存檔：已經拿過垃圾袋就算介紹過 ICC
-  G.air = G.air || {};   // v73：空拍看到過的限定物（舊存檔沒有）
+  delete G.air;
   if (G.partyAway && G.soloO !== G.outing) soloEnd();   // 只有螃蟹的那一趟已經結束了（在螃蟹講總結時關掉遊戲），隊友回來
   if (G.sta > staMax()) G.sta = staMax();
   G.mods.forEach(([x, y, ch]) => { map[y][x] = ch; });
@@ -5746,7 +5725,7 @@ async function engScarab() {
   G.f.engSaid = 1;
 }
 
-/* ===== 空拍限定 ===== */
+/* ===== 空拍 ===== */
 const AERIAL_PHOTOS = {
   taichung: { photo: 'aerialTaichung', title: 'TAICHUNG 施工中', text: '從空中記錄迎賓廊道的施工情況，看看河道怎麼變了。' },
   shizheng: { photo: 'aerialShizheng', title: '市政路延伸工程', text: '還在進行中的市政路延伸工程，聽說2027年會完工。附近便是七期，誰想得到在市中心的精華地段，就有一條生態如此豐富的溪流呢？' },
@@ -5771,50 +5750,10 @@ function droneRange() {
   const top = Math.max(0, (next ? next.y : P.y - 20) - 2), bot = Math.min(HEIGHT - 1, Math.max(P.y + 3, top + 12));
   return [Math.max(top, bot - 36), bot];
 }
-// 起飛：標出範圍、空拍限定的東西在這段範圍內就現形（之後地面上也看得到、撿得到）
 function droneFlyNow() {
-  const [y0, bot] = droneRange();
-  G.droneOut = G.outing; G.droneY = [y0, bot];
-  const n = airReveal(y0, bot);
+  G.droneOut = G.outing;
+  G.droneY = droneRange();
   saveNow();
-  return n;
-}
-function airReveal(y0, y1) {
-  G.air = G.air || {}; let n = 0;
-  ENTS.forEach(e => { if (e.air && e.y >= y0 && e.y <= y1 && !G.gone[e.id] && !G.air[e.id]) { G.air[e.id] = 1; n++; } });
-  return n;
-}
-const airEnts = () => ENTS.filter(e => e.air).sort((a, b) => b.y - a.y);
-const airName = e => (e.k === 'dex' ? DEX[e.dex].name : (typeof pickName === 'function' ? pickName(e) : itemName(e.item)));
-const nearBridge = () => W.bridges.some(b => P.y >= b.y - 2 && P.y <= b.y + 7);
-async function airTutorial() {
-  const tut = ENTS.find(e => e.airTut);
-  await say('sunset', '遠處草叢裡好像疑似有一大包垃圾，但是這裡看不清楚。');
-  if (inParty('green')) await say('green', '那用空拍機看看吧。');
-  const n = droneFlyNow();
-  if (tut) { G.air = G.air || {}; G.air[tut.id] = 1; }
-  SFX.good();
-  busy++; paneOpen = true; modal.hidden = false; openMap('drone');
-  while (paneOpen) await new Promise(r => setTimeout(r, 120));
-  await say('sunset', '看到了嗎？草叢裡真的有一包垃圾。');
-  await say('sunset', '有些東西，只有空拍才看得到。空拍機一趟只能飛一次，想好什麼時候飛。');
-  toast('按下面的「空拍」，可以看到只有高處才看得到的東西', { gold: true, ms: 3600 });
-  void n;
-}
-// 走過了一個空拍限定的東西卻沒發現：螃蟹說一句（每趟最多一次）
-function airHintCheck() {
-  if (rainActive()) return;
-  if (!G.f.airTut || G.f.airHintO === G.outing || !G.ot || G.ot.o !== G.outing) return;
-  if (W.zoneAt[P.y].id === 'd' || nearbyAerialSites().length) return;
-  const e = airEnts().find(q => !(G.air && G.air[q.id]) && !G.gone[q.id] && q.y - P.y >= 3 && q.y - P.y <= 10 && G.ot.y0 >= q.y);
-  if (!e) return;
-  G.f.airHintO = G.outing;
-  queueStory(async () => {
-    if (rainActive()) return;
-    if (W.zoneAt[P.y].id === 'd' || nearbyAerialSites().length) return;
-    await say('crab', '總覺得剛才那段漏了什麼。');
-    if (droneOn() && G.droneOut !== G.outing) toast('也許該把空拍機放上去看看', { ms: 3000 });
-  });
 }
 
 /* ===== 苦楝果 ===== */
@@ -5853,15 +5792,6 @@ function specialTick() {
       saveNow();
     });
   }
-  if (!G.f.airTut && G.f.drone && G.f.droneO && G.f.droneO < G.outing && !ex && inParty('sunset') && !G.partyAway && G.droneOut !== G.outing && nearBridge()) {
-    const tut = ENTS.find(e => e.airTut);
-    if (!tut || G.gone[tut.id] || P.y < tut.y - 14) G.f.airTut = 1;
-    else if (Math.abs(tut.y - P.y) <= 14 && W.zoneAt[P.y].id !== 'd' && !nearbyAerialSites().length) {
-      G.f.airTut = 1;
-      queueStory(airTutorial);
-    }
-  }
-  airHintCheck();
 }
 /* ---------- 新的一天：置中的河況預報卡（上半是依河況換色的溪景，下半是名稱與說明） ---------- */
 const DAY_W = 128, DAY_H = 64;
@@ -6213,8 +6143,11 @@ const EV = {
   async joinGreen(e) {
     await say('green', '最近這邊在施工，我來空拍施工情況，紀錄河道變化。');
     await showAerialPhoto('taichung');
-    await say('green', '我的空拍機借隊伍用。下面多了一個「空拍」按鈕，想飛的時候按它。');
-    await say('green', '空拍時，可以看到許多平常看不見的驚喜和風景。');
+    await say('green', '我的空拍機借隊伍用。空拍除了記錄河道，也能幫我們看看附近有沒有還沒撿的垃圾、還沒記錄的動植物，或還沒打過招呼的人。');
+    await say('green', '來，看一下剛剛拍到的畫面。');
+    await droneTutorial();
+    await say('green', '剛剛拍完已經沒電了。下次出門，想看看附近還有什麼，就按下面的「空拍」。');
+    await say('green', '一趟只能飛一次，但飛完的畫面可以再打開看。');
     G.f.drone = 1; G.f.droneO = G.outing; $('#bMap').hidden = false; join('green', e); setGoal('往永春路前進');
     collectAerialPhoto('taichung');
   },
@@ -6936,14 +6869,14 @@ function showResult(win, pick = -1) {
   if (!DEMO) {
     const dia = (G.diary || []).filter(p => p.b), last = dia[dia.length - 1];
     const essay = last ? { h: `${last.o ? `第 ${last.o} 次出門・` : ''}${last.b}`, t: DIARY[last.b] || last.t || '' } : null;
-    const sks = LOOKS.filter(l => G.looks && G.looks[l.id]).slice(-3);
+    const sks = collectedLooks();
     const stk = G.stickers || {}, nstk = STICKERS.filter(([k]) => stk[k]).length;
     const ROT = [-3, 2, -2, 3, -1.5, 2.5, -2.5, 1.5];
     PG.push(['jn', `<h3><small>4／縱走手帳</small>你寫下的、看見的</h3>
       <div class="collage">
         ${essay && essay.t ? `<div class="cn essay"><i class="tape"></i><small>${escH(essay.h)}</small><p class="hw">${escH(essay.t)}</p></div>` : ''}
         ${G.knMine ? `<div class="cn ans"><i class="tape"></i><small>你眼中的筏子溪是……</small><p class="hw" id="eKn"></p></div>` : ''}
-        ${sks.length ? `<div class="polas">${sks.map((l, i) => `<figure style="--r:${[-4, 2.5, -2][i]}deg"><i class="tape"></i><img src="${lookSketchUrl(l)}" alt=""><figcaption class="hw">${escH(l.title)}</figcaption></figure>`).join('')}</div>` : ''}
+        ${sks.length ? `<div class="polas">${sks.map((l, i) => `<figure style="--r:${[-4, 2.5, -2][i % 3]}deg"><i class="tape"></i><img src="${lookSketchUrl(l)}" alt=""><figcaption class="hw">${escH(l.title)}</figcaption></figure>`).join('')}</div>` : ''}
         <div class="stks"><small>貼紙　${nstk}/${STICKERS.length}</small><div>${STICKERS.map(([k, nm], i) => `<span class="${stk[k] ? '' : 'no'}" style="--r:${ROT[i]}deg"><img src="${stickerUrl(k, !!stk[k])}" alt="${nm}"></span>`).join('')}</div></div>
       </div>
       <p class="tonext">${lookN() ? `你停下來看了 ${lookN()} 次。` : ''}整本手帳在最後的總覽裡。</p>`]);
@@ -6955,9 +6888,10 @@ function showResult(win, pick = -1) {
   // 統整頁：證書在最上面，其他收合
   const fold = (t, h, open) => `<details class="fd"${open ? ' open' : ''}><summary>${t}</summary><div class="fdb">${h}</div></details>`;
   const sumHtml = `<div class="pickact"><small>${pick >= 0 ? '你選擇' : '一起來'}</small><b>${ACT[main][0]}</b>${ACT[main][1]}</div>
-      <div class="cardwrap"><img id="eCard" alt="${win ? '縱走完成證書' : 'TO BE CONTINUED'}：${myName()} aka ${G.nick || ''}"><p class="cardload">證書印製中……</p></div>
+      <div class="cardwrap${DEMO ? ' demo-cardwrap' : ''}"><img id="eCard" alt="${win ? '縱走完成證書' : 'TO BE CONTINUED'}：${myName()} aka ${G.nick || ''}"><p class="cardload">證書印製中……</p></div>
       ${vers.length > 1 ? `<div class="vdots" id="eVer" aria-label="證書版本">${vers.map(v => `<button type="button" data-v="${v.id}" class="${v.id === cardDefault() ? 'on' : ''}" aria-label="${v.name}"><i></i><span>${v.name.replace('版', '')}</span></button>`).join('')}</div>` : ''}
       <div class="acts"><button class="btn" id="eSave" type="button">存成圖片</button>${!DEMO ? '<button class="btn teal" id="eJnl" type="button">翻閱縱走手帳</button>' : ''}</div>
+      ${DEMO ? `<div class="demo-crab-note f-bubble">${portrait('crab')}<p>想解鎖完整版遊戲，記得來參加講座。</p></div>` : ''}
       ${DEMO ? `<section class="lecture" aria-labelledby="eLectureTitle">
         <p class="lecture-label" id="eLectureTitle">講座資訊</p>
         <h4>${EVENT.title.replace('：', '：<br>')}</h4>
@@ -7039,7 +6973,7 @@ function openBook(tab) {
   const body = {
     dex: () => {
       const nc = Object.keys(G.clues).length;
-      return `<p>動植物 ${got}/${dexIds.length}　點照片再看一次</p><div class="dexgrid">${dexIds.map(k => (G.dex[k] ? `<button data-dex="${k}"><img src="${A.photos[DEX[k].photo]}" alt="">${DEX[k].name}</button>` : (DEX[k].air ? '<button disabled><span class="lock">?</span>從高處才看得到</button>' : '<button disabled><span class="lock">?</span>？？？</button>'))).join('')}</div>
+      return `<p>動植物 ${got}/${dexIds.length}　點照片再看一次</p><div class="dexgrid">${dexIds.map(k => (G.dex[k] ? `<button data-dex="${k}"><img src="${A.photos[DEX[k].photo]}" alt="">${DEX[k].name}</button>` : '<button disabled><span class="lock">?</span>？？？</button>')).join('')}</div>
       <p>石虎檔案 ${nc}/4${nc >= 4 ? '　全部找到了！' : '　牠會留下痕跡'}</p><div class="sumr">${[1, 2, 3, 4].map(i => `<div class="r"><span>${G.clues[i] ? '已發現' : '？？？'}</span><b>${G.clues[i] ? '' : CLUE_HINTS[i]}</b></div>`).join('')}</div>`;
     },
     trash: () => {
@@ -7082,45 +7016,56 @@ function fastestTo(t) {
 }
 const MAP_TABS = m => `<div class="tabs two"><button data-m="city" class="${m === 'city' ? 'on' : ''}">地圖</button><button data-m="log" class="${m === 'log' ? 'on' : ''}">縱走記錄</button></div>`;
 const MAP_DOCK = () => `<div class="dock"><button class="btn" id="bClose">回到溪裡</button></div>`;
-function openMap(tab = 'city') {
+async function droneTutorial() {
+  modal.hidden = false;
+  try {
+    openMap('drone', true);
+    await waitTap(modal.querySelector('#bClose'));
+  } finally {
+    modal.hidden = true;
+    modal.replaceChildren();
+  }
+}
+function openMap(tab = 'city', tutorial = false) {
   if (tab === 'city') return openCity();
   if (tab === 'log') return openLog();
-  if (!droneOn()) return openCity();
+  if (!tutorial && !droneOn()) return openCity();
   const next = nextTarget();
-  const [y0, bot] = droneRange(), rows = bot - y0 + 1;
-  const flown = G.droneOut === G.outing;
-  const marks = droneMarks();
+  const flown = !tutorial && G.droneOut === G.outing && !!G.droneY;
+  const range = flown ? G.droneY : droneRange();
+  const [y0, bot] = range, rows = bot - y0 + 1;
+  const photoSite = nearbyAerialSites().length > 0;
+  const marks = tutorial ? droneMarks(range) : droneMarks();
   const cnt = k => marks.filter(e => (k === 'trash' ? (e.k === 'trash' || e.k === 'rare') : e.k === k)).length;
-  const airs = airEnts(), airFound = airs.filter(e => G.air && G.air[e.id]).length;
-  const airSec = airs.length ? `<section class="airs"><h4>高處才看得到　<small>${airFound}/${airs.length}</small></h4>
-      <div class="airg">${airs.map(e => (G.air && G.air[e.id] ? `<div class="aq on"><b>${airName(e)}</b><small>${G.gone[e.id] ? (e.k === 'dex' ? '已記錄' : '已撿起') : '地面上看得到了'}</small></div>` : '<div class="aq"><span>?</span></div>')).join('')}</div></section>` : '';
-  modal.innerHTML = `<div class="bagv dmap drn"><h3>空拍<small>　${flown ? '這趟已經飛過' : '電池剩 1 次'}</small></h3>
-    ${flown ? `<canvas id="drone" width="${VIEW_W}" height="${rows * TILE}" aria-label="空拍畫面：你到下一座梯子之間的溪"></canvas>
-      <ul class="legend big"><li><b class="k-t"></b>垃圾 ${cnt('trash')}</li><li><b class="k-d"></b>物種 ${cnt('dex')}</li><li><b class="k-p"></b>人 ${cnt('npc')}</li>${marks.some(e => e.air) ? `<li><b class="k-a"></b>高處才看得到 ${marks.filter(e => e.air).length}</li>` : ''}</ul>`
-      : `<p class="bigtxt">飛一次，看${next ? `到${next.bridge}梯子` : '前面'}這段溪，還有藏起來的東西。</p><button class="btn bigbtn" id="dFly">起飛</button>`}
-    ${airSec}
+  modal.innerHTML = `<div class="bagv dmap drn"><h3>空拍<small>　${tutorial ? '綠川的示範' : photoSite ? '空拍照已收錄' : flown ? '這趟已經飛過' : '電池剩 1 次'}</small></h3>
+    ${!tutorial && !flown && !photoSite ? `<p class="bigtxt">飛一次，看${next ? `到${next.bridge}梯子` : '前面'}這段溪。</p><button class="btn bigbtn" id="dFly">起飛</button>` : ''}
+    <canvas id="drone" width="${VIEW_W}" height="${rows * TILE}" aria-label="空拍地圖，標有橋梁和你的位置"></canvas>
+    ${tutorial || flown ? `<ul class="legend big"><li><b class="k-t"></b>未撿垃圾 ${cnt('trash')}</li><li><b class="k-d"></b>未記錄物種 ${cnt('dex')}</li><li><b class="k-p"></b>可交談人物 ${cnt('npc')}</li></ul>` : ''}
     <div class="dock"><button class="btn" id="bClose">回到溪裡</button></div></div>`;
   modal.scrollTop = 0;
   const fly = modal.querySelector('#dFly');
-  if (fly) { fly.onclick = () => { SFX.good(); droneFlyNow(); openMap('drone'); }; return; }
-  const c = modal.querySelector('#drone'), x = c.getContext('2d');
-  x.imageSmoothingEnabled = false;
-  for (let i = 0; i * CHUNK < HEIGHT; i++) { const ct = i * CHUNK * TILE, ch = chunks[i]; if (ch) x.drawImage(ch, 0, ct - y0 * TILE); }
+  if (fly) fly.onclick = () => { SFX.good(); droneFlyNow(); openMap('drone'); };
+  const c = modal.querySelector('#drone'), x = sceneCrop(c, y0);
   drawShizheng(x, y0 * TILE);
   const ring = (e, col) => { x.strokeStyle = '#000'; x.lineWidth = 4; x.beginPath(); x.arc(e.x * TILE + 8, (e.y - y0) * TILE + 8, 9, 0, 7); x.stroke(); x.strokeStyle = col; x.lineWidth = 2; x.stroke(); };
   marks.forEach(e => {
     if (e.y < y0 || e.y > bot) return;
-    if (e.k === 'trash' || e.k === 'rare') { x.drawImage(icon(e.item), e.x * TILE + 2, (e.y - y0) * TILE + 2, 12, 12); ring(e, e.air ? '#c7a0ff' : e.k === 'rare' ? '#ff5240' : '#ffffff'); }
-    else ring(e, e.air ? '#c7a0ff' : e.k === 'dex' ? '#ffc61e' : '#7ee0ff');
+    if (e.k === 'trash' || e.k === 'rare') { x.drawImage(icon(e.item), e.x * TILE + 2, (e.y - y0) * TILE + 2, 12, 12); ring(e, '#ffffff'); }
+    else ring(e, e.k === 'dex' ? '#ffc61e' : '#7ee0ff');
   });
-  if (next) { x.strokeStyle = '#ffc61e'; x.lineWidth = 2; x.strokeRect(next.x * TILE - 1, (next.y - y0) * TILE - 1, 18, 18); }
+  if (next && next.y >= y0 && next.y <= bot) { x.strokeStyle = '#ffc61e'; x.lineWidth = 2; x.strokeRect(next.x * TILE - 1, (next.y - y0) * TILE - 1, 18, 18); }
   const py = (P.y - y0) * TILE + 8;
-  x.fillStyle = '#ffc61e'; x.strokeStyle = '#000'; x.lineWidth = 3; x.beginPath(); x.arc(P.x * TILE + 8, py, 6, 0, 7); x.stroke(); x.fill();
+  if (P.y >= y0 && P.y <= bot) {
+    x.fillStyle = '#ffc61e'; x.strokeStyle = '#000'; x.lineWidth = 3; x.beginPath(); x.arc(P.x * TILE + 8, py, 6, 0, 7); x.stroke(); x.fill();
+    crispLabel(x, '你在這裡', P.x * TILE + 8, py >= 26 ? py - 23 : py + 10, '#fff3b0', '#16233d');
+  } else {
+    crispLabel(x, P.y < y0 ? '你在空拍範圍北方' : '你在空拍範圍南方', VIEW_W / 2, P.y < y0 ? 4 : c.height - 18, '#fff3b0', '#16233d');
+  }
 }
-// 空拍標到的東西：還沒撿的垃圾、還沒記錄的物種、還沒聊過的人（頭上有驚嘆號的；聊過的不標）。這趟有效
-function droneMarks() {
-  if (G.droneOut !== G.outing || !G.droneY) return [];
-  const [y0, y1] = G.droneY;
+// 空拍標示目前仍可互動的垃圾、物種與人物。
+function droneMarks(range = G.droneOut === G.outing ? G.droneY : null) {
+  if (!range) return [];
+  const [y0, y1] = range;
   return ENTS.filter(e => e.y >= y0 && e.y <= y1 && !entGone(e) && ((e.k === 'trash' || e.k === 'rare') || (e.k === 'dex' && !G.dex[e.dex]) || (e.k === 'npc' && e.ev !== 'crabRoad' && npcAlert(e))));
 }
 function openLog() {
@@ -7172,6 +7117,7 @@ $('#bDrone').onclick = () => {
   if (sites.length) {
     run(async () => {
       for (const site of sites) { await showAerialPhoto(site.id); collectAerialPhoto(site.id); }
+      busy++; paneOpen = true; modal.hidden = false; openMap('drone');
     });
     return;
   }
@@ -7534,7 +7480,7 @@ async function drawCard(win, theme) {
   try { await document.fonts.load('20px "Cubic 11"'); await document.fonts.load('12px "Press Start 2P"'); } catch (e) { /* 字型讀不到就用系統字 */ }
   const { overall, n, dex } = badges(win), L = legendFind(), total = DEX_TOTAL();
   theme = CARD_PAL[theme] ? theme : cardDefault();
-  const T = CARD_PAL[theme], S2 = 2, Wc = 360, Hc = DEMO ? 596 : 578, c = document.createElement('canvas'); c.width = Wc * S2; c.height = Hc * S2;
+  const T = CARD_PAL[theme], S2 = 2, Wc = 360, Hc = DEMO && theme === 'river' ? 560 : 578, c = document.createElement('canvas'); c.width = Wc * S2; c.height = Hc * S2;
   const x = c.getContext('2d'); x.scale(S2, S2); x.imageSmoothingEnabled = false;
   const F = (px, arc) => `${px}px ${arc ? '"Press Start 2P"' : '"Cubic 11"'}, sans-serif`;
   const text = (s, X, Y, o = {}) => {
@@ -7590,12 +7536,23 @@ async function drawCard(win, theme) {
     ls.forEach((t, k) => text(t, 32, (ls.length > 1 ? 524 : 531) + k * 16, { size: sz, color: T.find, align: 'left' }));
   } else {
     if (L.icon && A.icons[L.icon]) { const ic = await loadImg(A.icons[L.icon]); if (ic) x.drawImage(ic, 28, 495, 40, 40); }
+    else if (!L.icon) {
+      const fruit = [
+        '.....o..', '....og..', '...ogo..', '..ooog..',
+        '.oyyyo..', 'oyhhyyoo', 'oyhyysyo', 'oyyyysoo',
+        '.oyssso.', '..oooo..',
+      ];
+      const colors = { o: '#52391f', g: '#6c7838', y: '#e8b945', h: '#fff1a6', s: '#c68832' };
+      for (let j = 0; j < fruit.length; j++) for (let i = 0; i < fruit[j].length; i++) {
+        const color = colors[fruit[j][i]];
+        if (color) { x.fillStyle = color; x.fillRect(32 + i * 4, 495 + j * 4, 4, 4); }
+      }
+    }
     text('這趟最傳奇的發現', 80, 509, { size: 12, color: T.lab, align: 'left' });
     const lg = `${L.find}　→ 稱號「${L.title}」`; let ls = 14; x.font = F(ls); while (ls > 10 && x.measureText(lg).width > Wc - 104) { ls--; x.font = F(ls); }
     text(lg, 80, 531, { size: ls, color: T.find, align: 'left' });
   }
   { const v = CARD_VERS.find(q => q.id === theme); if (v && v.why) text(v.why, Wc / 2, 563, { size: 11, color: T.lab }); }
-  if (DEMO) text('解鎖完整版：11/26 晚上 7 點講座', Wc / 2, 578, { size: 12, color: T.find });
   return c;
 }
 // 在 claude.ai 的頁面裡要透過 downloads 能力存檔；單獨打開的檔案就用分享或下載連結
@@ -8507,8 +8464,7 @@ function jnEssayHtml(browse) {
   return `${jnPageHtml(pages[i])}<div class="jnav"><button data-jp="-1" ${i <= 0 ? 'disabled' : ''}>上一頁</button><b>${i + 1}/${pages.length}</b><button data-jp="1" ${i >= pages.length - 1 ? 'disabled' : ''}>下一頁</button></div>`;
 }
 function jnSketchGrid() {
-  const got = LOOKS.filter(l => G.looks && G.looks[l.id]).length;
-  return `<div class="jhd"><b>速寫</b><i>${got}/${LOOKS.length}</i></div><div class="kgrid">${LOOKS.map(l => (G.looks && G.looks[l.id]
+  return `<div class="jhd"><b>速寫</b><i>${lookN()}/${LOOKS.length}</i></div><div class="kgrid">${LOOKS.map(l => (lookCollected(l)
     ? `<div class="kcell got"><img class="ksk" src="${lookSketchUrl(l)}" alt="${escH(l.title)}的速寫"><b>${escH(l.title)}</b><i>${escH(l.say)}</i></div>` : `<div class="kcell"><i>${escH(l.loc)}</i></div>`)).join('')}</div>`;
 }
 function jnStickerGrid() {
@@ -8552,7 +8508,7 @@ function jnClick(e) {
 }
 // 結尾頁的「翻閱縱走手帳」：蓋在結尾頁上面，闔上就回到結尾頁
 async function jnBrowse() {
-  JN.tab = 'essay'; JN.day = -1; JN.browse = true;
+  JN.tab = lookN() ? 'sk' : 'essay'; JN.day = -1; JN.browse = true;
   const ov = document.createElement('div'); ov.id = 'jov'; $('#app').append(ov);
   const paint = () => { ov.innerHTML = `<div class="bagv">${journalHtml(true)}<button class="btn" id="jClose">闔上手帳</button></div>`; };
   paint();
@@ -8596,7 +8552,7 @@ function iccFinale() {
         el.innerHTML = `<div class="ifcard"><div class="ifsheet"><div class="ifh"><b>ICC 淨灘紀錄表</b><i>${p} 件</i></div>
           ${TRASH.map((t, i) => `<div class="ifr${c[t.id] ? '' : ' no'}" style="--d:${i * .12}s"><img src="${A.icons[t.id]}" alt=""><span>${t.name}</span><i style="--w:${c[t.id] ? Math.max(6, Math.round(c[t.id] / mx * 100)) : 0}%"></i><b>${c[t.id] || ''}</b></div>`).join('')}
           ${done ? '<div class="ifstamp">已收錄<small>筏子溪資料庫</small></div>' : `<div class="ifnote">還差 ${need} 件<small>下次再補</small></div>`}</div>
-          ${bee(done ? '表格填完了，辛苦了！這麼多種垃圾分類，一時的確很難搞懂。' : '這次撿起的垃圾不多。筏子溪是許多生物的棲地，也是台中市許多農田的灌溉水源，下次再一起努力，讓這片土地恢復美麗的樣貌。')}
+          ${bee('表格填完了，辛苦了！這麼多種垃圾分類，一時的確很難搞懂。')}
           <p class="iftap">點一下繼續</p></div>`;
         setTimeout(() => { if (done) { SFX.stick && SFX.stick(); el.querySelector('.ifstamp').classList.add('on'); } else { const n = el.querySelector('.ifnote'); if (n) n.classList.add('on'); } }, REDUCED ? 0 : 1500);
       } else if (step === 1) {
@@ -8655,26 +8611,25 @@ LOOKS.forEach(look => { look.y = W.shiftRow(look.y); });
 const LOOK_HINT_RANGE = 4, LOOK_STOP_RANGE = 2, LOOK_WAIT_MS = 2000;
 const lookDistance = l => Math.max(Math.abs(l.x - P.x), Math.abs(l.y - P.y));
 const LKS = { on: false, idle: 0, id: '' };
-const lookN = () => LOOKS.filter(l => G.looks?.[l.id]).length;
+// 照片版沿用七個觀察地點，讓已在該地停留的舊存檔仍能翻看手帳。
+const LEGACY_LOOK_IDS = ['LK-01', 'LK-02', 'LK-03', 'LK-04', 'LK-05', 'LK-07', 'LK-08'];
+const lookCollected = l => !!(G.looks?.[l.id] || G.looks?.[LEGACY_LOOK_IDS[LOOKS.indexOf(l)]]);
+const collectedLooks = () => LOOKS.filter(lookCollected);
+const lookN = () => collectedLooks().length;
 const lookSketchUrl = l => A.photos[l.photo];
 
 function lookShimmer(g, t, cam, y0, y1) {
   if (DEMO || mode !== 'play' || G.done || LKS.on) return;
   for (const L of LOOKS) {
-    if (G.looks?.[L.id] || L.y < y0 - 1 || L.y > y1 + 1) continue;
+    if (lookCollected(L) || L.y < y0 - 1 || L.y > y1 + 1) continue;
     const x = L.x * TILE + 8, y = L.y * TILE - cam + 3;
-    const phase = REDUCED ? 0 : Math.floor(t / 220) % 6;
-    const float = phase >= 3 ? 1 : 0;
-    g.fillStyle = '#193b3a';
-    g.fillRect(x - 2, y - 4 - float, 5, 9);
-    g.fillRect(x - 4, y - 2 - float, 9, 5);
-    g.fillStyle = '#8ce5bf';
-    g.fillRect(x - 1, y - 3 - float, 3, 7);
-    g.fillRect(x - 3, y - 1 - float, 7, 3);
-    g.fillStyle = '#fff1ac';
-    g.fillRect(x - 1, y - 1 - float, 3, 3);
-    g.fillRect(x + 5, y - 4 + float, 1, 1);
-    g.fillRect(x - 5, y + 3 - float, 1, 1);
+    const pulse = REDUCED ? .5 : (1 + Math.sin(t / 360 + L.y)) / 2;
+    const alpha = .16 + pulse * .48;
+    g.fillStyle = `rgba(182, 240, 220, ${alpha})`;
+    g.fillRect(x - 2, y, 5, 1);
+    g.fillRect(x, y - 2, 1, 5);
+    g.fillStyle = `rgba(246, 255, 237, ${alpha})`;
+    g.fillRect(x, y, 1, 1);
   }
 }
 function lookWaitDraw(g, cam, px, py) {
@@ -8691,7 +8646,7 @@ function lookWaitDraw(g, cam, px, py) {
 function lookIdle(dt) {
   if (DEMO) return;
   if (mode !== 'play' || busy || !dlg.hidden || !modal.hidden || G.done || LKS.on || rainActive()) { LKS.idle = 0; return; }
-  const L = LOOKS.find(l => !G.looks?.[l.id] && lookDistance(l) <= LOOK_HINT_RANGE);
+  const L = LOOKS.find(l => !lookCollected(l) && lookDistance(l) <= LOOK_HINT_RANGE);
   if (!L) { LKS.idle = 0; LKS.id = ''; return; }
   G.lookHints ||= {};
   if (!G.lookHints[L.id]) {
@@ -8706,12 +8661,14 @@ function lookIdle(dt) {
 }
 async function lookRun(L) {
   held = null; path = [];
-  G.looks ||= {};
-  G.looks[L.id] = 1;
-  addMin(2); saveNow();
   LKS.on = true;
-  try { await jnSketchSheet(L); }
-  finally { LKS.on = false; }
+  try {
+    await say(null, '這裡好像有甚麼動靜');
+    G.looks ||= {};
+    G.looks[L.id] = 1;
+    addMin(2); saveNow();
+    await jnSketchSheet(L);
+  } finally { LKS.on = false; }
   if (G.clock >= limitNow() && mode === 'play') await timeUp();
 }
 async function jnSketchSheet(L) {
