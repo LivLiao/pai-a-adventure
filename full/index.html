@@ -3554,7 +3554,8 @@ function arrived() {
   const z = W.zoneAt[P.y];
   if (z.name !== zoneShown) { zoneShown = z.name; showZone(z.name); }
   if (ch === 'w') { questTick('wet'); if (!G.f.slowTold) { G.f.slowTold = 1; toast(G.f.plants ? '臺灣水龍底下是水，走起來慢吞吞' : '腳下軟軟的……走起來好慢', { ms: 2600 }); } }
-  if ((ch === 'y' || ch === 'v') && !G.f.marshTold) { G.f.marshTold = 1; toast('東海橋濕地：淡綠色的地走起來特別輕快', { ms: 2600 }); }
+  // 第一次踩上東海橋濕地的淡綠色草地：玩家自己發現這條比較快的路
+  if ((ch === 'y' || ch === 'v') && !G.f.marshTold) { G.f.marshTold = 1; queueStory(() => say(null, '找到一條隱密的小徑，走起來更快了！')); }
   if (ch === 'c' && !G.f.carpetSeen) { G.f.carpetSeen = 1; path = []; run(weedCarpet); return; }
   const meant = e2 => stepVia === 'held' || (intent && intent.x === e2.x && intent.y === e2.y);   // 這是玩家特地要去的那個東西嗎
   { // 散落一片：點了那一片，走進 3×3 的範圍就問一次，離開再回來才會再問
@@ -5269,15 +5270,20 @@ function weatherApply(w) {
     // 一群淨溪志工：圍著同一段河岸走來走去，看到垃圾就撿
     const land = (x, y) => map[y] && '.,'.includes(map[y][x]) && !entAt(x, y);
     // 離其他 NPC 遠一點，自己一群
-    const alone = y => !ENTS.some(q => q.k === 'npc' && !entGone(q) && Math.abs(q.y - y) < 9);
-    const first = pick((x, y) => y <= P.y - 12 && land(x, y) && nearWater(x, y) && alone(y - 3) && alone(y + 3), 1, 10)[0];
+    const alone = (y, r = 9) => !ENTS.some(q => q.k === 'npc' && !entGone(q) && Math.abs(q.y - y) < r);
+    // 優先擺在今天出口梯子之前：原本最遠會擺到 45 格外，常常越過梯子，玩家上岸了都沒碰到志工
+    const tg = nextTarget(), lim = tg ? tg.y + 1 : -1;
+    const spot = (near, before, r = 9) => pick((x, y) => y <= P.y - near && (!before || y > lim) && land(x, y) && nearWater(x, y) && alone(y - 3, r) && alone(y + 3, r), 1, 10)[0];
+    // 出口前真的擠（附近有阿伯、釣客或還沒入隊的隊友）才放寬距離，最後才擺到出口後面
+    const first = spot(12, true) || spot(8, true) || spot(8, true, 4) || spot(12, false);
     if (first) {
+      const beforeExit = first[1] > lim;
       const spots = [first];
       for (let r = 1; r <= 6 && spots.length < 4; r++)
         for (let dy = -r; dy <= r && spots.length < 4; dy++)
           for (let dx = -r; dx <= r && spots.length < 4; dx++) {
             const x = first[0] + dx, y = first[1] + dy;
-            if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || x < 1 || x > 13 || y > P.y - 8) continue;
+            if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || x < 1 || x > 13 || y > P.y - 6 || (beforeExit && y <= lim)) continue;
             if (land(x, y) && !spots.some(([sx, sy]) => Math.abs(sx - x) + Math.abs(sy - y) < 3)) spots.push([x, y]);
           }
       spots.forEach(([x, y], i) => {
@@ -5539,7 +5545,9 @@ function specialPlan() {
   if (DEMO || G.done || G.outing < 2) return p;
   if (G.lastW === 'cleanup' && !G.f.soloDone) G.f.soloPend = 1;
   if (!G.f.rtDone && G.outing >= 6 && G.outing <= 8 && G.lastW !== 'rainy' && !window.__forceW) { p.rain = true; return p; }   // 上一次已經是降雨日（還沒變天就上岸）就不連續再下
-  if (G.f.soloPend && !G.f.soloDone && G.party.length >= 3 && G.outing !== 3 && !worksPending()) p.solo = true;
+  // 聖甲蟲還沒講市政路工程、這趟又可能走到那段：只有螃蟹的一天往後延，不然那段講解就永遠聽不到了
+  const shizhengAhead = !G.f.shizhengTold && inParty('scarab') && P.y >= SHIZHENG_Y - 6 && P.y - SHIZHENG_Y <= 45;
+  if (G.f.soloPend && !G.f.soloDone && G.party.length >= 3 && G.outing !== 3 && !worksPending() && !shizhengAhead) p.solo = true;
   return p;
 }
 
@@ -8888,7 +8896,7 @@ function openBoardEnding(win, claim) {
   };
 }
 const PLAY_DATA_URL = 'https://script.google.com/macros/s/AKfycbyVr5lViqwBsXZoWBSf92rfbEW3xrcicG3cQKcYSMje64wo-rUu-uDnHafdKh_XbrbCAg/exec';
-const PLAY_DATA_RELEASE = 'f0d8ede44fe1';
+const PLAY_DATA_RELEASE = 'fb3be6029481';
 const PLAY_DATA_PLAYER_KEY = 'pai-a-anonymous-player';
 let playDataLast = '';
 let playDataAt = 0;
