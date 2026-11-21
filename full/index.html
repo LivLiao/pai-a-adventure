@@ -722,8 +722,9 @@ a { color: inherit; }
 }
 .dig-tracking .dig-meter b {
   position: absolute; inset: 0 calc(100% - var(--dig-end)) 0 var(--dig-start);
-  background: repeating-linear-gradient(135deg,#8bdb9c 0 4px,#a6efac 4px 8px);
-  box-shadow: inset 1px 0 #d0ffce, inset -1px 0 #d0ffce;
+  /* 提示寫「綠區」：原本的淡薄荷色在手機上看起來偏白偏青，改用葉子綠 */
+  background: repeating-linear-gradient(135deg,var(--leaf) 0 4px,#5cc94a 4px 8px);
+  box-shadow: inset 1px 0 #b8f5a0, inset -1px 0 #b8f5a0;
 }
 .dig-tracking .dig-meter i { position: absolute; top: -3px; bottom: -3px; left: 0; transform: translateX(-50%); width: 4px; background: #fff2b7; box-shadow: 0 0 0 1px #071517; }
 .dig-tracking .dig-meter i::before {
@@ -1254,6 +1255,8 @@ a { color: inherit; }
 #rankFlow.flow-register { display:grid;place-items:safe center; }
 #rankFlow.flow-register .flow-page { width:min(100%,490px); }
 .preview-rank-badge { top:auto; bottom:clamp(82px,17vh,145px); }
+/* 有存檔時下面多了「讀取手帳記錄／重新開始」兩顆按鈕，固定位置的排行榜會壓到它們：改成排在按鈕上方、靠右 */
+.tbot .stack ~ .preview-rank-badge { position:relative; bottom:auto; right:auto; order:-1; justify-self:end; margin-right:clamp(10px,5vw,26px); }
 .sty .s-sum .board-end-actions { display:grid; grid-template-columns:minmax(0,1fr); gap:8px; width:min(100%,330px); justify-self:center; margin-top:6px; }
 .sty .s-sum .board-end-actions > .btn { box-sizing:border-box; width:100%; height:52px; min-height:52px; margin:0; justify-self:stretch; padding:0 8px; font-size:16px; }
 .board-status:empty { display:none; }
@@ -6975,7 +6978,7 @@ function showResult(win, pick = -1) {
   $('#eAgain').onclick = () => { titleScreen(); };
   const ej = $('#eJnl'); if (ej) ej.onclick = () => jnBrowse();
   const eb = $('#eBoard'); if (eb) eb.onclick = openBoardOverview;
-  modal.querySelectorAll('#eShare').forEach(sh => sh.onclick = async () => { try { if (navigator.share) { await navigator.share({ title: 'Pâi-á的奇妙冒險', text: share() }); sh.textContent = '已開啟分享'; return; } } catch (err) { if (err.name === 'AbortError') return; } try { await navigator.clipboard.writeText(share()); sh.textContent = '已複製成績'; } catch (err) { const fl = modal.querySelector('details.full'); if (fl) fl.open = true; sh.textContent = '請長按下面的文字複製'; } });
+  modal.querySelectorAll('#eShare').forEach(sh => sh.onclick = async () => { try { if (useShareSheet()) { await navigator.share({ title: 'Pâi-á的奇妙冒險', text: share() }); sh.textContent = '已開啟分享'; return; } } catch (err) { if (err.name === 'AbortError') return; } try { await navigator.clipboard.writeText(share()); sh.textContent = '已複製成績'; } catch (err) { const fl = modal.querySelector('details.full'); if (fl) fl.open = true; sh.textContent = '請長按下面的文字複製'; } });
   // 限時動態翻頁：不自動翻；最後是統整頁（可以捲動，不再點左右翻頁）
   { const sty = $('#sty'), pages = [...sty.querySelectorAll('.spg')], bars = [...sty.querySelectorAll('.sbar i')], last = pages.length - 1;
     let cur = 0, boardShown = false;
@@ -7234,7 +7237,9 @@ function boot(data) {
 window.claude?.hot?.snapshot?.(gameSnapshot);
 const startGame = data => {
   const ready = document.fonts?.ready || Promise.resolve();
-  Promise.all([ready.catch(() => {}), new Promise(resolve => setTimeout(resolve, REDUCED ? 0 : 1550))]).then(() => boot(data));
+  // LOADING 打字動畫最少播 1.55 秒，從打開網頁開始算：網路慢、下載已經超過的話，就不用再多等
+  const wait = REDUCED ? 0 : Math.max(0, 1550 - performance.now());
+  Promise.all([ready.catch(() => {}), new Promise(resolve => setTimeout(resolve, wait))]).then(() => boot(data));
 };
 window.claude?.hot?.ready ? window.claude.hot.ready(startGame) : startGame(window.claude?.hot?.data ?? {});
 
@@ -7622,6 +7627,8 @@ async function drawCard(win, theme) {
 // 在 claude.ai 的頁面裡要透過 downloads 能力存檔；單獨打開的檔案就用分享或下載連結
 let DL_P = null;
 function prepDownloads() { if (!DL_P) { try { DL_P = window.claude && window.claude.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null); } catch (e) { DL_P = Promise.resolve(null); } } return DL_P; }
+// 系統分享只在手機、平板用：電腦（Windows）的分享視窗只有附近分享、郵件這類，不是玩家平常用的 LINE、FB
+function useShareSheet() { return !!navigator.share && matchMedia('(pointer: coarse)').matches; }
 async function saveCard(c) {
   const blob = await new Promise(r => c.toBlob(r, 'image/png'));
   const dl = await Promise.race([prepDownloads(), new Promise(r => setTimeout(() => r(null), 1500))]);
@@ -7629,8 +7636,10 @@ async function saveCard(c) {
     try { await dl.save({ filename: 'pai-a-rpg.png', data: blob }); return '已存成圖片'; }
     catch (e) { return e && e.code === 'declined' ? '存成圖片' : '存不了，請長按上面的卡片儲存'; }
   }
+  // LINE 內建瀏覽器會擋下載，下面的連結點了也沒反應，卻會顯示「已存成圖片」。卡片本身是 <img>，長按就能存
+  if (/\bLine\//i.test(navigator.userAgent)) return '請長按上面的卡片儲存';
   const file = new File([blob], 'pai-a-rpg.png', { type: 'image/png' });
-  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Pâi-á的奇妙冒險' }); return '已開啟分享'; } } catch (e) { if (e.name === 'AbortError') return '存成圖片'; }
+  try { if (useShareSheet() && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Pâi-á的奇妙冒險' }); return '已開啟分享'; } } catch (e) { if (e.name === 'AbortError') return '存成圖片'; }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'pai-a-rpg.png'; document.body.appendChild(a); a.click(); a.remove();
   return '已存成圖片';
 }
@@ -8879,7 +8888,7 @@ function openBoardEnding(win, claim) {
   };
 }
 const PLAY_DATA_URL = 'https://script.google.com/macros/s/AKfycbyVr5lViqwBsXZoWBSf92rfbEW3xrcicG3cQKcYSMje64wo-rUu-uDnHafdKh_XbrbCAg/exec';
-const PLAY_DATA_RELEASE = '78c67fea0036';
+const PLAY_DATA_RELEASE = 'f0d8ede44fe1';
 const PLAY_DATA_PLAYER_KEY = 'pai-a-anonymous-player';
 let playDataLast = '';
 let playDataAt = 0;
