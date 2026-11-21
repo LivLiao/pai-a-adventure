@@ -1194,8 +1194,7 @@ a { color: inherit; }
 .ifbee { grid-template-columns: 56px minmax(0, 1fr); }
 .ifbee .por { width: 56px; overflow: hidden; display: grid; justify-items: center; } .ifbee .por img { width: 52px; height: auto; display: block; }
 .ifstamp { right: 44px; bottom: 44px; }
-.play-data-choice { display: grid; gap: 5px; font-size: 13px; text-align: left; }
-.play-data-choice p { margin: 0; }
+.play-data-notice { font-size: 12px; }
 
 .boss-photo { display: block; margin: 0 auto; width: auto; height: auto; max-width: 100%; max-height: 38vh; object-fit: contain; }
 
@@ -6623,18 +6622,9 @@ function titleScreen() {
 function cautionScreen() {
   modal.innerHTML = `<div class="caution"><h2>CAUTION</h2><p>進入溪流，是高風險的行為</p><p>應有萬全的準備</p><p><span class="nw">穿著救生衣、</span><span class="nw">結伴同行、</span><span class="nw">確認天候與水域狀況</span></p><p>上過專業教練帶領之溪流安全課程</p><p class="big">請勿貿然自行進入溪流</p><button class="btn" id="cOk">我知道了</button></div>`;
   if (PLAY_DATA_URL && !DIG_PREVIEW) {
-    $('#cOk').insertAdjacentHTML('beforebegin', `<div class="play-data-choice">
-      <label><input id="playDataConsent" type="checkbox"> 分享匿名遊玩紀錄</label>
-      <p>記錄裝置類型、遊玩進度與證書儲存按鈕是否曾被點擊，供遊戲維護者查看。</p>
-      <label for="playDataNick">測試暱稱（選填）</label>
-      <input id="playDataNick" maxlength="20" autocomplete="off" disabled>
-    </div>`);
-    $('#playDataConsent').onchange = e => { $('#playDataNick').disabled = !e.target.checked; };
+    $('#cOk').insertAdjacentHTML('beforebegin', '<p class="play-data-notice">遊戲會記錄匿名遊玩進度、裝置類型與證書儲存按鈕是否曾被點擊。</p>');
   }
-  $('#cOk').onclick = () => {
-    const nick = $('#playDataConsent')?.checked ? $('#playDataNick').value : null;
-    clearSave(); newRun(nick);
-  };
+  $('#cOk').onclick = () => { clearSave(); newRun(); };
 }
 function resetWorld() {
   weatherClear();
@@ -6646,10 +6636,10 @@ function resetWorld() {
   const fresh = buildWorld();
   fresh.map.forEach((r, y) => { map[y] = r; });
 }
-async function newRun(playDataNick = null) {
+async function newRun() {
   resetWorld();
   G = newGame();
-  if (playDataNick !== null) playDataStart(playDataNick);
+  playDataStart();
   P.x = START.x; P.y = START.y; P.fx = P.x; P.fy = P.y; P.dir = 'up'; trail = []; path = [];
   camY = Math.max(0, P.y * TILE - viewH * .56);
   $('#bMap').hidden = true;
@@ -6690,6 +6680,7 @@ async function newRun(playDataNick = null) {
   });
 }
 function startPlay() {
+  playDataStart();
   modal.hidden = true; modal.innerHTML = '';
   hudEl.hidden = false; ctrl.hidden = false; $('#bSound').hidden = false; mode = 'play';
   $('#bMap').hidden = false;
@@ -8855,7 +8846,7 @@ function openBoardEnding(win, claim) {
   };
 }
 const PLAY_DATA_URL = 'https://script.google.com/macros/s/AKfycbyVr5lViqwBsXZoWBSf92rfbEW3xrcicG3cQKcYSMje64wo-rUu-uDnHafdKh_XbrbCAg/exec';
-const PLAY_DATA_RELEASE = 'ef97d27e284d';
+const PLAY_DATA_RELEASE = '54fcc103bb4b';
 const PLAY_DATA_PLAYER_KEY = 'pai-a-anonymous-player';
 let playDataLast = '';
 let playDataAt = 0;
@@ -8871,8 +8862,8 @@ function playDataDevice(ua, touch) {
   return { os, device, line: /\bLine\//i.test(ua) ? '1' : '0' };
 }
 
-function playDataStart(nick) {
-  if (!PLAY_DATA_URL || DIG_PREVIEW) return;
+function playDataStart() {
+  if (!PLAY_DATA_URL || DIG_PREVIEW || G.playData) return;
   const run = playDataId();
   let player = run;
   try {
@@ -8880,7 +8871,7 @@ function playDataStart(nick) {
     if (/^r[a-f0-9]{32}$/.test(stored || '')) player = stored;
     else { player = playDataId(); localStorage.setItem(PLAY_DATA_PLAYER_KEY, player); }
   } catch {}
-  G.playData = { player, run, nick: nick.trim().slice(0, 20), started: Date.now() };
+  G.playData = { player, run, nick: '', started: Date.now() };
   playDataRecord(true);
 }
 
