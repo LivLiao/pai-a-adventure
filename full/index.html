@@ -6317,13 +6317,18 @@ const EV = {
       await say(null, '……這棵樹，好像在哪裡看過？');
       $('#app').classList.remove('dream');
     }
-    await showPhoto('todo', '大雅烏橋附近的苦楝樹，是縱走後段的地標。', { tag: '大雅苦楝樹', title: '冬天的苦楝' }); // 待補充：之後換成終點苦楝的照片（原 key: neem_wuqiao）
-    await showPhoto('n064', '苦楝是河畔常見的喬木，春天會開滿淡紫色的花。', { tag: '大雅苦楝樹', title: '春天的苦楝' });
+    // 照片只在第一次走到這棵樹時看（沿途的冬天苦楝也會記圖鑑，所以另外用一個旗標，不看 G.dex.neem）
+    if (!G.f.neemPhoto) {
+      G.f.neemPhoto = 1;
+      await showPhoto('todo', '大雅烏橋附近的苦楝樹，是縱走後段的地標。', { tag: '大雅苦楝樹', title: '冬天的苦楝' }); // 待補充：之後換成終點苦楝的照片（原 key: neem_wuqiao）
+      await showPhoto('n064', '苦楝是河畔常見的喬木，春天會開滿淡紫色的花。', { tag: '大雅苦楝樹', title: '春天的苦楝' });
+    }
     if (!G.f.neemRest) {
       const i = await ask(null, '要在樹下休息一下嗎？', ['休息', '繼續走']);
       if (i === 0) { G.f.neemRest = 1; G.clock = Math.max(0, G.clock - 10); await say(null, '在光禿禿的苦楝樹下喝口水。時間多了 10 分鐘。'); await say(null, '閉上眼睛的時候，好像聽到有人喊「少年仔」。睜開眼，四周一個人也沒有。'); hud(); }
     }
-    await recordDex('neem');
+    // 上面已經看過苦楝的照片：記到圖鑑就好，不再把苦楝和紫花的照片又跳一次
+    await recordDex('neem', DEX.neem, true);
   },
   async signSource() {
     await say(null, '烏橋快到了。再往上，就是筏子溪的源頭方向。');
@@ -6480,11 +6485,15 @@ async function showDexPhoto(d, tag = '圖鑑') {
     await showPhoto('neemFlowers', '近看，淡紫色的小花成串開在枝頭。', { tag, title: '苦楝紫花', fullImage: true });
   }
 }
-async function recordDex(id, photo = DEX[id]) {
+// quiet：照片剛剛已經給玩家看過了，只記錄，新記到的才用一行金色提示告訴玩家
+async function recordDex(id, photo = DEX[id], quiet = false) {
+  const fresh = !G.dex[id];
+  if (quiet && !fresh) return;
   SFX.dex();
-  if (!G.dex[id]) { G.dex[id] = 1; gainExp(4); questTick('dex', id); saveNow(); }
+  if (fresh) { G.dex[id] = 1; gainExp(4); questTick('dex', id); saveNow(); }
   hud();
-  await showDexPhoto(photo, `圖鑑 ${Object.keys(G.dex).length}/${Object.keys(DEX).length}`);
+  if (quiet) toast(`圖鑑 ${Object.keys(G.dex).length}/${Object.keys(DEX).length}：${DEX[id].name}`, { gold: true, ms: 2400 });
+  else await showDexPhoto(photo, `圖鑑 ${Object.keys(G.dex).length}/${Object.keys(DEX).length}`);
   if (id === 'fig') await knFind('09');
   if (!DEMO && !G.f.obsEgg && myRole() === 1 && Object.keys(G.dex).length >= 12) { G.f.obsEgg = 1; queueStory(obsEgg); }
 }
@@ -8579,7 +8588,8 @@ function jnIccHtml() {
 function jnAerialHtml() {
   const shots = Object.entries(AERIAL_PHOTOS).filter(([id]) => G.aerialPhotos?.[id]).map(([, shot]) => shot);
   return `<div class="jhd"><b>空拍圖</b><i>${shots.length}/${Object.keys(AERIAL_PHOTOS).length}</i></div>
-    ${shots.length ? shots.map(s => `<figure class="jaerial"><img src="${A.photos[s.photo]}" alt="${s.title}" loading="lazy"><figcaption><b>${s.title}</b><br>${s.text}</figcaption></figure>`).join('') : '<p class="jnote">還沒收錄空拍照。</p>'}`;
+    ${shots.length ? shots.map(s => `<figure class="jaerial"><img src="${A.photos[s.photo]}" alt="${s.title}" loading="lazy"><figcaption><b>${s.title}</b><br>${s.text}</figcaption></figure>`).join('') : '<p class="jnote">還沒收錄空拍照。</p>'}
+    ${!DEMO && shots.length < Object.keys(AERIAL_PHOTOS).length ? '<p class="jnote">好像還有些值得看看的地方錯過了...</p>' : ''}`;   // 試玩版走不到任何空拍點，不提示
 }
 function journalHtml(browse) {
   const body = { essay: () => jnEssayHtml(browse), kn: knHtml, sk: jnSketchGrid, st: jnStickerGrid, icc: jnIccHtml, air: jnAerialHtml }[JN.tab]();
@@ -8896,7 +8906,7 @@ function openBoardEnding(win, claim) {
   };
 }
 const PLAY_DATA_URL = 'https://script.google.com/macros/s/AKfycbyVr5lViqwBsXZoWBSf92rfbEW3xrcicG3cQKcYSMje64wo-rUu-uDnHafdKh_XbrbCAg/exec';
-const PLAY_DATA_RELEASE = 'fb3be6029481';
+const PLAY_DATA_RELEASE = '54eb01853af9';
 const PLAY_DATA_PLAYER_KEY = 'pai-a-anonymous-player';
 let playDataLast = '';
 let playDataAt = 0;
